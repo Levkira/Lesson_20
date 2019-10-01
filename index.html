@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Lesson 20</title>
+	<style>
+		body {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin: 0;
+		}
+		.navigation_list {
+			display: block;
+			padding: 0;
+			margin: 0;
+			list-style: none;
+		}
+		.navigation_list li {
+			font-family: sans-serif;
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #f5f4f4;
+			border-bottom: 5px solid #3f3f3f;
+			cursor: pointer;
+		}
+		.navigation_list li a {
+			color: rgb(19, 19, 19);
+			text-decoration: none;
+		}
+		.navigation_item {
+			display: none;
+			position: relative;
+			text-decoration: none;
+		}
+		.navigation_item > ul {
+			position: absolute;
+			top: 100%;
+			left: 0;
+			padding: 0;
+			margin: 0;
+			list-style: none;
+			display: none;
+		}
+		.navigation_item > ul > li {
+			text-decoration: none;
+			width: 80%;
+		}
+	</style>
+</head>
+<body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script>
+		const listContent = [
+			{
+				text: 'List item 01',
+				className: 'link_item'
+			},
+			{
+				text: 'List item 02',
+				className: 'link_item'
+			},
+			{
+				text: 'List item 03',
+				className: 'navigation_item',
+				innerItems: [
+					{
+						text: 'Item 01',
+						className: 'link_item'
+					},
+					{
+						text: 'Item 02',
+						className: 'link_item'
+					},
+					{
+						text: 'Item 03',
+						className: 'link_item'
+					},
+					{
+						text: 'Item 04',
+						className: 'link_item'
+					}
+				]
+			},
+			{
+				text: 'List item 04',
+				className: 'link_item'
+			}
+		]
+		const nav = $('<nav>').appendTo('body');
+		
+		const createList = function(arr, parent) {
+			let ul = $('<ul class="navigation_list">');
+
+			$('<ul>').addClass('navigation_list');
+				arr.forEach(listItem => {
+				let li = $('<li>');
+				if(listItem.className) {
+					li.addClass(listItem.className);
+				}
+				if(listItem.innerItems) {
+					li.text(listItem.text);
+					createList(listItem.innerItems, li);
+				} else {
+					$('<a href="https://google.com">').text(listItem.text).appendTo(li);
+				}
+				li.appendTo(ul);
+			});
+			ul.appendTo(parent);
+		};
+
+		createList(listContent, nav);
+		
+		$('.navigation_item').on('click', function(event) {
+			$(this).children('ul').toggle();
+		});
+
+		$('.link_item').on('click', function(event) {
+			event.preventDefault();
+			const isLeave = confirm('Вы уверенны, что хотите покинуть текущую страницу?');
+			if(isLeave) {
+				const linkFromHref = $(this).children('a').attr('href');
+				window.location.href = linkFromHref;
+			}
+			event.stopPropagation();
+		});
+	</script>
+</body>
+</html>
+
